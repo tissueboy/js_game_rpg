@@ -66,20 +66,19 @@ class GameScene extends Phaser.Scene {
       y: 100
     });
 
+    this.enemyWeaponGroup = this.add.group();
+
     /*==============================
     衝突判定
     ==============================*/
 
     this.physics.add.collider(this.player,this.groundLayer);
     this.physics.add.collider(this.enemy,this.groundLayer);
-    this.physics.add.collider(this.player,this.enemy);
+    this.physics.add.collider(this.player,this.enemy,this.enemyCollideCheck);
 
 
     this.colliderActivated = true;
-    this.physics.add.collider(this.player.weapon,this.enemy,this.hitCheck,
-      function(){
-        return this.colliderActivated;
-    },this);
+    // this.physics.add.collider(this.player.weapon,this.enemy,this.hitCheck);
 
 
     /*==============================
@@ -199,7 +198,13 @@ class GameScene extends Phaser.Scene {
     // this.hp_bar_graphics.scaleX -= 0.1;
   
   }
+  enemyCollideCheck(player,enemy){
+    console.log("collideCheck");
+    // enemy.startAttacking();
+
+  }
   hitCheck() {
+    console.log("hitCheck");
     // setting colliderActivated to false, so it will return false in the collision check 
     // and the collision no longer happens.
     this.colliderActivated = false;

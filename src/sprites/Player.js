@@ -9,6 +9,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     config.scene.physics.world.enable(this);
     config.scene.add.existing(this);
 
+    // this.setImmovable(true);
+
     // console.log(this.scene);
 
     /*==============================
@@ -16,6 +18,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     ==============================*/
     this.power = 20;
     this.defense = 0;
+
+    this.HIT_DELAY = 500;
+
+    this.lastTimeHit = new Date().getTime();
     
     this.hp = config.hp;
 
@@ -29,30 +35,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.weapon = new Weapon({
       scene: this.scene,
       key: 'weapon_sword',
-      x: this.x+40,
-      y: this.y+40,
+      x: this.x,
+      y: this.y,
     });
     this.weapon.setVisible(false);
 
     this.damage = new Damage({
       scene: this.scene,
     });
-    // console.log(this.weapon);
-    // config.scene.physics.add.collider(this.weapon,config.scene.enemy,function(){
-    //   console.log("attacl");
-    // });
+
   }
 
   create(){
-    // console.log(this.weapon);
-    // this.physics.add.collider(this.weapon,this.scene.enemy,function(){
-    //   console.log("attacl");
-    // });
+
   }
 
   update(keys, time, delta) {
-
-
 
     this.anims.play('waitAnime', true);
 
@@ -100,9 +98,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         target_y = _y + 16;
         break;
     }
-    function onCom(){
-      _target.setVisible(false);      
-    }
+
     var tween = this.scene.tweens.add({
       targets: _target,
       x: target_x,
@@ -112,12 +108,36 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       loop: 0,
       completeDelay: 160,
       onComplete: function () {
-        onCom();
+        _target.setVisible(false);
+        _target.x = _x;
+        _target.y = _y;
       },
     });
 
   }
-  collide_p(){
-    console.log("collide");
+
+  canGetHit() {
+    
+    return new Date().getTime() - this.lastTimeHit > this.HIT_DELAY;
+
+  }
+
+  loseHp() {
+    // this.hp--;
+
+
+    this.lastTimeHit = new Date().getTime();
+
+    if (this.hp > 0) {
+      return;
+    }
+
+    // // Player dies
+    // if (!this.tomb) {
+    //   this.tomb = this.scene.add
+    //     .sprite(this.x, this.y, ASSETS.IMAGES.TOMB)
+    //     .setScale(0.1);
+    // }
+    // this.destroy();
   }
 }
